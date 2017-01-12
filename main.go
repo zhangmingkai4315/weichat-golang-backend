@@ -17,7 +17,10 @@ func main() {
 		return
 	}
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/validate", routers.WeiChatValidate).Methods("GET")
+	r.HandleFunc("/api", routers.PostMessage).Methods("POST")
+	r.HandleFunc("/api", routers.WeiChatValidate).Methods("GET")
+	http.Handle("/",r)
+
 	hostAndPort := fmt.Sprintf("%s:%d", configObj.Server.Host, configObj.Server.Port)
 	server := &http.Server{
 		Handler:      r,
