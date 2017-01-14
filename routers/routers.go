@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"github.com/zhangmingkai4315/weichat-golang-backend/config"
+	"log"
 	"net/http"
 	"net/url"
 	"sort"
@@ -32,6 +33,7 @@ func checkRequestSig(vals url.Values) bool {
 func WeiChatValidate(w http.ResponseWriter, r *http.Request) {
 	vals := r.URL.Query()
 	echostr := vals.Get("echostr")
+	log.Printf("Reiceive Query : %s", r.URL.String())
 	if checkResult := checkRequestSig(vals); checkResult == true {
 		fmt.Fprintf(w, echostr)
 		return
