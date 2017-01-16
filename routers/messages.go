@@ -18,12 +18,13 @@ import (
 //</xml>
 
 type UserMessage struct {
-	XML          xml.Name `xml:"xml"`
+	XMLName      xml.Name `xml:"xml"`
 	ToUserName   string   `xml:"ToUserName"`
 	FromUserName string   `xml:"FromUserName"`
 	CreateTime   int      `xml:"CreateTime"`
 	MsgType      string   `xml:"MsgType"`
 	Content      string   `xml:"Content"`
+	Event        string   `xml:"Event"`
 	MsgId        string   `xml:"MsgId"`
 }
 
@@ -45,26 +46,11 @@ func receiveMessage(r *http.Request) (*UserMessage, error) {
 	return &um, nil
 }
 func answerMessage(w http.ResponseWriter, um *UserMessage) {
-	if answer, err := xml.Marshal(um); err != nil {
+	if err := xml.NewEncoder(w).Encode(um); err != nil {
 		fmt.Fprintf(w, "error")
-		return
-	} else {
-		fmt.Fprintf(w, string(answer))
 		return
 	}
 }
-
-func UsageText() string {
-	return "欢迎订阅DNS安全公众号,我们将实时为您反馈关于DNS及其相关的安全问题。\n" +
-		"您可以回复如下的信息进行操作\n" +
-		"1. 回复\"历史\"　查看历史信息" +
-		"2. 回复\"攻击\"　查看dns安全事件" +
-		"3. 其他内容，将自动转化为留言发送给管理员" +
-		"感谢您的使用"
-
-}
-
-//　PostMessage　is a http handler, it will receive the text from the user and give them feedback
 
 func PostMessage(w http.ResponseWriter, r *http.Request) {
 	vals := r.URL.Query()
@@ -80,7 +66,10 @@ func PostMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	//对于消息的处理
 	log.Printf("Recevied %+v", userMessage)
-	userMessage.ResponseUser(UsageText())
-
-	answerMessage(w, userMessage)
+	switch userMessage.MsgType {
+	case "event":
+		EventHub(w, userMessage)
+	case "text":
+		TextHub(w, userMessage)
+	}
 }
