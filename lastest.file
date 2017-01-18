@@ -1,0 +1,636 @@
+{
+ "Bvlist": [
+  {
+   "ID": 82,
+   "CVE": "2016-9778",
+   "ShortDescription": "An error handling certain queries using the nxdomain-redirect feature could cause a REQUIRE assertion failure in db.c",
+   "Url": "https://kb.isc.org/article/AA-01442/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-9778",
+    "DocumentVersion": "2.0",
+    "PostingDate": "11 Jan 2017",
+    "version_affected": "9.9.8-S1 -\u003e 9.9.8-S3, 9.9.9-S1 -\u003e 9.9.9-S6, 9.11.0-9.11.0 -\u003e P1",
+    "severity": "High (for affected configurations)",
+    "expoitable": "Remotely",
+    "description": "An error in handling certain queries can cause an assertion failure when a server is using the nxdomain-redirect feature to cover a zone for which it is also providing authoritative service.  A vulnerable server could be intentionally stopped by an attacker if it was using a configuration that met the criteria for the vulnerability and if the attacker could cause it to accept a query that possessed the required attributes.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 81,
+   "CVE": "2016-9444",
+   "ShortDescription": "An unusually-formed DS record response could cause an assertion failure",
+   "Url": "https://kb.isc.org/article/AA-01441/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-9444",
+    "DocumentVersion": "2.0",
+    "PostingDate": "11 Jan 2017",
+    "version_affected": "9.6-ESV-R9 -\u003e 9.6-ESV-R11-W1, 9.8.5 -\u003e 9.8.8, 9.9.3 -\u003e \n9.9.9-P4, 9.9.9-S1 -\u003e 9.9.9-S6, 9.10.0 -\u003e 9.10.4-P4, 9.11.0 -\u003e \n9.11.0-P1",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "An unusually-formed answer containing a DS resource record could trigger an assertion failure.  While the combination of properties which triggers the assertion should not occur in normal traffic, it is potentially possible for the assertion to be triggered deliberately by an attacker sending a specially-constructed answer having the required properties.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 80,
+   "CVE": "2016-9147",
+   "ShortDescription": "An error handling a query response containing inconsistent DNSSEC information could cause an assertion failure",
+   "Url": "https://kb.isc.org/article/AA-01440/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-9147",
+    "DocumentVersion": "2.0",
+    "PostingDate": "11 Jan 2017",
+    "version_affected": "9.9.9-P4, 9.9.9-S6, 9.10.4-P4, 9.11.0-P1",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "Depending on the type of query and the EDNS options in the query they receive, DNSSEC-enabled authoritative servers are expected to include RRSIG and other RRsets in their responses to recursive servers.  DNSSEC-validating servers will also make specific queries for DS and other RRsets.  Whether DNSSEC-validating or not, an error in processing malformed query responses that contain DNSSEC-related RRsets that are inconsistent with other RRsets in the same query response can trigger an assertion failure.  Although\n the combination of properties which triggers the assertion should \nnot occur in normal traffic, it is potentially possible for the \nassertion to be triggered deliberately by an attacker sending a \nspecially-constructed answer.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 79,
+   "CVE": "2016-9131",
+   "ShortDescription": "A malformed response to an ANY query can cause an assertion failure during recursion",
+   "Url": "https://kb.isc.org/article/AA-01439/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-9131",
+    "DocumentVersion": "2.0",
+    "PostingDate": "11 Jan 2017",
+    "version_affected": "9.4.0 -\u003e 9.6-ESV-R11-W1, 9.8.5 -\u003e 9.8.8, 9.9.3 -\u003e 9.9.9-P4, \n9.9.9-S1 -\u003e 9.9.9-S6, 9.10.0 -\u003e 9.10.4-P4, 9.11.0 -\u003e 9.11.0-P1",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "A malformed query response received by a recursive server in response to a query of RTYPE ANY could trigger an assertion failure while named is attempting to add the RRs in the query response to the cache.  While the combination of properties which triggers the assertion should \nnot occur in normal traffic, it is potentially possible for the \nassertion to be triggered deliberately by an attacker sending a \nspecially-constructed answer having the required properties, after having engineered a scenario whereby an ANY query is sent to the recursive server for the target QNAME.  A recursive server will itself only send a query of type ANY if it \nreceives a client query of type ANY for a QNAME for which it has no \nRRsets at all in cache, otherwise it will respond to the client with the\n the RRsets that it has available.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 78,
+   "CVE": "2016-8864",
+   "ShortDescription": "A problem handling responses containing a DNAME answer can lead to an assertion failure",
+   "Url": "https://kb.isc.org/article/AA-01434/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-8864",
+    "DocumentVersion": "2.0",
+    "PostingDate": "1 November 2016",
+    "version_affected": "9.0.x -\u003e 9.8.x, 9.9.0 -\u003e 9.9.9-P3, 9.9.3-S1 -\u003e 9.9.9-S5, 9.10.0 -\u003e 9.10.4-P3, 9.11.0",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "A defect in BIND's handling of responses containing a DNAME answer can \ncause a resolver to exit after encountering an assertion failure in db.c or \nresolver.c",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 77,
+   "CVE": "2016-2848",
+   "ShortDescription": "A packet with malformed options can trigger an assertion failure in ISC BIND versions released prior to May 2013 and in packages derived from releases prior to that date.",
+   "Url": "https://kb.isc.org/article/AA-01433/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-2848",
+    "DocumentVersion": "2.0",
+    "PostingDate": "20 October 2016",
+    "version_affected": "9.1.0 -\u003e 9.8.4-P2, 9.9.0 -\u003e 9.9.2-P2",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "A packet with a malformed options section can be used to deliberately trigger an assertion failure affecting versions of BIND which do not contain change #3548, which was first included in ISC BIND 9 releases in May 2013.  Current ISC versions of BIND are safe from this vulnerability, but repackaged versions distributed by other parties may be vulnerable if they were forked from ISC's source before change #3548.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 76,
+   "CVE": "2016-2776",
+   "ShortDescription": "Assertion Failure in buffer.c While Building Responses to a Specifically Constructed Request",
+   "Url": "https://kb.isc.org/article/AA-01419/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-2776",
+    "DocumentVersion": "2.1",
+    "PostingDate": "2016-09-27",
+    "version_affected": "9.0.x -\u003e 9.8.x, 9.9.0-\u003e9.9.9-P2, 9.9.3-S1-\u003e9.9.9-S3, 9.10.0-\u003e9.10.4-P2, \n9.11.0a1-\u003e9.11.0rc1",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "Testing by ISC has uncovered a critical error condition which can occur when a nameserver is constructing a response.  A defect in the rendering of messages into packets can cause named to exit with an assertion failure in buffer.c while constructing a response to a query that meets certain criteria.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 75,
+   "CVE": "2016-2775",
+   "ShortDescription": "A query name which is too long can cause a segmentation fault in lwresd",
+   "Url": "https://kb.isc.org/article/AA-01393/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-2775",
+    "DocumentVersion": "2.0",
+    "PostingDate": "18 July 2016",
+    "version_affected": "9.0.x -\u003e 9.9.9-P1, 9.10.0-\u003e9.10.4-P1, \n9.11.0a3-\u003e9.11.0b1",
+    "severity": "Medium",
+    "expoitable": "Remotely (if lwresd is configured to accept remote client connections)",
+    "description": "If the lightweight resolver is asked to resolve a query name which, when combined with a search list entry, exceeds the maximum allowable length, the server can terminate due to an error.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 74,
+   "CVE": "2016-2088",
+   "ShortDescription": "A response containing multiple DNS cookies causes servers with cookie support enabled to exit with an assertion failure",
+   "Url": "https://kb.isc.org/article/AA-01351/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-2088",
+    "DocumentVersion": "2.0",
+    "PostingDate": "09 March 2016",
+    "version_affected": "9.10.0 -\u003e 9.10.3-P3",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "BIND 9.10 has preliminary support for DNS cookies (or source identity tokens), a proposed mechanism designed to allow lightweight transaction security between a querying party and a nameserver. An error in the BIND code implementing support for this optional feature permits a deliberately misconstructed packet containing multiple cookie options to cause named to terminate with an INSIST assertion failure in resolver.c if DNS cookie support is enabled in the server.  Only servers with DNS cookie support enabled at build time can be affected by this defect; in servers which do not have DNS cookie support selected any cookies encountered will be ignored as unknown option types.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 73,
+   "CVE": "2016-1286",
+   "ShortDescription": "A problem parsing resource record signatures for DNAME resource records can lead to an assertion failure in resolver.c or db.c",
+   "Url": "https://kb.isc.org/article/AA-01353/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-1286",
+    "DocumentVersion": "2.0",
+    "PostingDate": "09 March 2016",
+    "version_affected": "9.0.0 -\u003e 9.8.8, 9.9.0 -\u003e 9.9.8-P3, 9.9.3-S1 -\u003e 9.9.8-S5,  \n9.10.0 -\u003e 9.10.3-P3",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "An error when parsing signature records for DNAME records having specific properties can lead to named exiting due to an assertion failure in resolver.c or db.c.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 72,
+   "CVE": "2016-1285",
+   "ShortDescription": "An error parsing input received by the rndc control channel can cause an assertion failure in sexpr.c or alist.c",
+   "Url": "https://kb.isc.org/article/AA-01352/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-1285",
+    "DocumentVersion": "2.0",
+    "PostingDate": "09 March 2016",
+    "version_affected": "9.2.0 -\u003e 9.8.8, 9.9.0-\u003e9.9.8-P3, 9.9.3-S1-\u003e9.9.8-S5, 9.10.0-\u003e9.10.3-P3",
+    "severity": "High",
+    "expoitable": "Remotely (on systems which accept control channel input from remote addresses.)",
+    "description": "Testing by ISC has uncovered a defect in control channel input handling which can cause named to exit due to an assertion failure in sexpr.c or alist.c when a malformed packet is sent to named's control channel (the interface which allows named to be controlled using the 'rndc\" server control utility).",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 71,
+   "CVE": "2016-1284",
+   "ShortDescription": "A REQUIRE assertion failure in rdataset.c can be deliberately triggered in servers performing NXDOMAIN redirection",
+   "Url": "https://kb.isc.org/article/AA-01348/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2016-1284",
+    "DocumentVersion": "1.0",
+    "PostingDate": "3 February 2016",
+    "version_affected": "9.9.8-S1 -\u003e 9.9.8-S4",
+    "severity": "Medium",
+    "expoitable": "Remotely",
+    "description": "An error in handling flag values in incoming queries can be exploited to\n deliberately trigger a REQUIRE assertion failure in rdataset.c on servers using the \"nxdomain-redirect\" option in BIND 9 Supported Preview Edition.",
+    "impact": "BIND 9 Supported Preview Edition (sometimes called \"BIND 9 Subscription Edition\")"
+   }
+  },
+  {
+   "ID": 70,
+   "CVE": "2015-8705",
+   "ShortDescription": "Problems converting OPT resource records and ECS options to text format can cause BIND to terminate",
+   "Url": "https://kb.isc.org/article/AA-01336/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-8705",
+    "DocumentVersion": "2.0",
+    "PostingDate": "19 January 2016",
+    "version_affected": "9.10.0-\u003e9.10.3-P2",
+    "severity": "Medium",
+    "expoitable": "Remotely",
+    "description": "In versions of BIND 9.10, errors can occur when OPT pseudo-RR data or ECS options are formatted to text.  In 9.10.3 through 9.10.3-P2, the issue may result in a REQUIRE assertion failure in buffer.c. In prior 9.10 versions, it may result in named crashing (such as with a segmentation fault) or other misbehavior due to a buffer overrun.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 69,
+   "CVE": "2015-8704",
+   "ShortDescription": "Specific APL data could trigger an INSIST in apl_42.c",
+   "Url": "https://kb.isc.org/article/AA-01335/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-8704",
+    "DocumentVersion": "2.0",
+    "PostingDate": "19 January 2016",
+    "version_affected": "9.3.0-\u003e9.8.8, 9.9.0-\u003e9.9.8-P2, 9.9.3-S1-\u003e9.9.8-S3, 9.10.0-\u003e9.10.3-P2",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "A buffer size check used to guard against overflow could cause named to exit with an INSIST failure In apl_42.c.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 68,
+   "CVE": "2015-8461",
+   "ShortDescription": "A race condition when handling socket errors can lead to an assertion failure in resolver.c",
+   "Url": "https://kb.isc.org/article/AA-01319/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-8461",
+    "DocumentVersion": "2.0",
+    "PostingDate": "15 December 2015",
+    "version_affected": "9.9.8 -\u003e 9.9.8-P1, 9.9.8-S1 -\u003e 9.9.8-S2, 9.10.3 -\u003e 9.10.3-P1",
+    "severity": "Medium",
+    "expoitable": "Remotely",
+    "description": "Beginning with the September 2015 maintenance releases 9.9.8 and 9.10.3, an error was introduced into BIND 9 which can cause a server to exit after encountering an INSIST assertion failure in resolver.c",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 67,
+   "CVE": "2015-8000",
+   "ShortDescription": "Responses with a malformed class attribute can trigger an assertion failure in db.c",
+   "Url": "https://kb.isc.org/article/AA-01317/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-8000",
+    "DocumentVersion": "2.0",
+    "PostingDate": "15 December 2015",
+    "version_affected": "9.0.x -\u003e 9.9.8, 9.10.0 -\u003e 9.10.3",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "An error in the parsing of incoming responses allows some records with an \nincorrect class to be accepted by BIND instead of being rejected as malformed.  This can trigger a REQUIRE assertion failure when \nthose records are subsequently cached. Intentional exploitation of this condition is possible and could be used as a denial-of-service vector against servers performing recursive queries.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 66,
+   "CVE": "2015-5986",
+   "ShortDescription": "An incorrect boundary check can trigger a REQUIRE assertion failure in openpgpkey_61.c",
+   "Url": "https://kb.isc.org/article/AA-01291/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-5986",
+    "DocumentVersion": "2.0",
+    "PostingDate": "02 September 2015",
+    "version_affected": "9.9.7 -\u003e 9.9.7-P2, 9.10.2 -\u003e 9.10.2-P3.",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "An incorrect boundary check in openpgpkey_61.c can cause named to terminate due to a REQUIRE assertion failure.  This defect can be deliberately exploited by an attacker who can provide a maliciously constructed response in answer to a query.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 65,
+   "CVE": "2015-5722",
+   "ShortDescription": "Parsing malformed keys may cause BIND to exit due to a failed assertion in buffer.c",
+   "Url": "https://kb.isc.org/article/AA-01287/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-5722",
+    "DocumentVersion": "2.0",
+    "PostingDate": "2 September 2015",
+    "version_affected": "BIND 9.0.0 -\u003e 9.8.8,  BIND 9.9.0 -\u003e 9.9.7-P2,\nBIND 9.10.0 -\u003e 9.10.2-P3",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "Parsing a malformed DNSSEC key can cause a validating resolver to exit due to a failed assertion in buffer.c.  It is possible for a remote attacker to deliberately trigger this condition, for example by using a query which requires a response from a zone containing a deliberately malformed key.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 64,
+   "CVE": "2015-5477",
+   "ShortDescription": "An error in handling TKEY queries can cause named to exit with a REQUIRE assertion failure",
+   "Url": "https://kb.isc.org/article/AA-01272/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-5477",
+    "DocumentVersion": "2.2",
+    "PostingDate": "28 July 2015",
+    "version_affected": "9.1.0 -\u003e 9.8.x, 9.9.0-\u003e9.9.7-P1, 9.10.0-\u003e9.10.2-P2",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "An error in the handling of TKEY queries can be exploited by an attacker for use as a denial-of-service vector, as a constructed packet can use the defect to trigger a REQUIRE assertion failure, causing BIND to exit.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 63,
+   "CVE": "2015-4620",
+   "ShortDescription": "Specially Constructed Zone Data Can Cause a Resolver to Crash when Validating",
+   "Url": "https://kb.isc.org/article/AA-01267/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-4620",
+    "DocumentVersion": "2.0",
+    "PostingDate": "7 July 2015",
+    "version_affected": "BIND 9.7.1 -\u003e 9.7.7, 9.8.0 -\u003e 9.8.8, 9.9.0 -\u003e 9.9.7, 9.10.0 -\u003e 9.10.2-P1.",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "A very uncommon combination of zone data has been found that triggers a bug in BIND, with the result that named will exit with a \"REQUIRE\" failure in name.c when validating the data returned in answer to a recursive query.  ",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 62,
+   "CVE": "2015-1349",
+   "ShortDescription": "A Problem with Trust Anchor Management Can Cause named to Crash",
+   "Url": "https://kb.isc.org/article/AA-01235/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2015-1349",
+    "DocumentVersion": "2.0",
+    "PostingDate": "18 Feb 2015",
+    "version_affected": "BIND 9.7.0 -\u003e BIND 9.10.1-P1.  Also, b1 and rc1 development versions of the upcoming BIND maintenance releases (9.9.7b1 \u0026 rc1, 9.10.2b1 \u0026 rc1) are affected.BIND versions 9.9.6, 9.9.6-P1, 9.10.1, and 9.10.1-P1 will terminate consistently with an assertion in zone.c, but previous affected versions may exhibit unpredictable behaviour, including server crashes, due to the use of an improperly initialized variable.",
+    "severity": "High, but requires specific conditions.",
+    "expoitable": "Remotely, under limited circumstances.",
+    "description": "BIND servers which are configured to perform DNSSEC validation and which are using managed-keys (which occurs implicitly when using \"dnssec-validation auto;\" or \"dnssec-lookaside auto;\") may terminate with an assertion failure when encountering all of the following conditions in a managed trust anchor:",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 61,
+   "CVE": "2014-8680",
+   "ShortDescription": "Defects in GeoIP features can cause BIND to crash",
+   "Url": "https://kb.isc.org/article/AA-01217/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2014-8680",
+    "DocumentVersion": "2.0",
+    "PostingDate": "08 December 2014",
+    "version_affected": "9.10.0 -\u003e 9.10.1",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "Multiple errors have been identified in the GeoIP features added in BIND 9.10.  Two are capable of crashing BIND -- triggering either can cause named to exit with an assertion failure, resulting in a denial of service condition.  A third defect is also corrected, which could have caused GeoIP databases to not be loaded properly if their location was changed while BIND was running.",
+    "impact": "BIND 9"
+   }
+  },
+  {
+   "ID": 60,
+   "CVE": "2014-8500",
+   "ShortDescription": "A Defect in Delegation Handling Can Be Exploited to Crash BIND",
+   "Url": "https://kb.isc.org/article/AA-01216/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2014-8500",
+    "DocumentVersion": "2.0",
+    "PostingDate": "08 December 2014",
+    "version_affected": "9.0.x -\u003e 9.8.x, 9.9.0 -\u003e 9.9.6, 9.10.0 -\u003e 9.10.1",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "By making use of maliciously-constructed zones or a rogue server, an attacker can exploit an oversight in the code BIND 9 uses to follow delegations in the Domain Name Service, causing BIND to issue unlimited queries in an attempt to follow the delegation.  This can lead to resource exhaustion and denial of service (up to and including termination of the named server process.)",
+    "impact": "BIND 9"
+   }
+  },
+  {
+   "ID": 59,
+   "CVE": "2014-3859",
+   "ShortDescription": "BIND named can crash due to a defect in EDNS printing processing",
+   "Url": "https://kb.isc.org/article/AA-01166/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2014-3859",
+    "DocumentVersion": "2.0",
+    "PostingDate": "11 June 2014",
+    "version_affected": "9.10.0, 9.10.0-P1",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "A query specially crafted to exploit a defect in EDNS option processing can cause named to\n terminate with an assertion failure.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 58,
+   "CVE": "2014-3214",
+   "ShortDescription": "A Defect in Prefetch Can Cause Recursive Servers to Crash",
+   "Url": "https://kb.isc.org/article/AA-01161/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2014-3214",
+    "DocumentVersion": "2.0",
+    "PostingDate": "8 May 2014",
+    "version_affected": "9.10.0",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "A defect in the pre-fetch feature (which is enabled by default) can cause BIND 9.10.0 to terminate with a \"REQUIRE\" assertion failure if it processes queries whose answers have particular attributes.  This can be triggered as the result of normal query processing.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 57,
+   "CVE": "2014-0591",
+   "ShortDescription": "A Crafted Query Against an NSEC3-signed Zone Can Crash BIND",
+   "Url": "https://kb.isc.org/article/AA-01078/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2014-0591",
+    "DocumentVersion": "2.0",
+    "PostingDate": "13 Jan 2014",
+    "version_affected": "9.6.0.x -\u003e 9.6-ESV-R10-P1, 9.7 (all versions), 9.8.0 -\u003e 9.8.6-P1, 9.9.0 -\u003e 9.9.4-P1.  Development releases 9.6-ESV-R11b1, 9.8.7b1, and 9.9.5b1 are also affected.",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "Because of a defect in handling queries for NSEC3-signed zones, BIND can crash with an \"INSIST\" failure in name.c when processing queries possessing certain properties. By exploiting this defect an attacker deliberately constructing a query with the right properties could achieve denial of service against an authoritative nameserver serving NSEC3-signed zones.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 56,
+   "CVE": "2013-6230",
+   "ShortDescription": "A Winsock API Bug can cause a side-effect affecting BIND ACLs",
+   "Url": "https://kb.isc.org/article/AA-01062/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2013-6230",
+    "DocumentVersion": "2.0",
+    "PostingDate": "06 November 2013",
+    "version_affected": "Windows versions 9.6-ESV-\u003e9.6-ESV-R10, 9.8.0-\u003e9.8.6, \n9.9.0-\u003e9.9.4; Subscription",
+    "severity": "High, for Windows systems with a specific netmask value set.",
+    "expoitable": "Remotely",
+    "description": "On some Microsoft Windows systems, a network interface that has an \"all ones\" IPv4 subnet mask \n(255.255.255.255) will be incorrectly reported (by the Winsock WSAIoctl API) as an all zeros value (0.0.0.0). Because interfaces' netmasks are used to compute the broadcast domain for each interface during construction of the built-in \"localnets\" ACL, an all zeroes netmask can cause matches on any IPv4 address, permitting unexpected access to any BIND feature configured to allow access to \"localnets\".  And unless overridden by a specific value in named.conf, the default permissions for several BIND features (for example, allow-query-cache, allow-query-cache-on, allow-recursion, and others) use this predefined \"localnets\" ACL.  ",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 55,
+   "CVE": "2013-4854",
+   "ShortDescription": "A specially crafted query can cause BIND to terminate abnormally",
+   "Url": "https://kb.isc.org/article/AA-01015/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2013-4854",
+    "DocumentVersion": "2.0",
+    "PostingDate": "26 July 2013",
+    "version_affected": "Open source",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "A specially crafted query that includes malformed rdata can cause named to terminate with an assertion failure while rejecting the malformed query.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 54,
+   "CVE": "2013-3919",
+   "ShortDescription": "A recursive resolver can be crashed by a query for a malformed zone",
+   "Url": "https://kb.isc.org/article/AA-00967/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2013-3919",
+    "DocumentVersion": "1.1",
+    "PostingDate": "04 Jun 2013",
+    "version_affected": "BIND 9.6-ESV-R9, 9.8.5, and 9.9.3 are affectedVersions 9.6.0 through 9.6-ESV-R8, 9.8.0 through 9.8.4-P2, and 9.9.0 through 9.9.2-P2 ARE NOT affected.Other major branches of BIND (e.g. 9.7, 9.5, etc) are not vulnerable but they are no longer supported by ISC and may lack other important security fixes.",
+    "severity": "High",
+    "expoitable": "Remotely",
+    "description": "A bug has been discovered in the most recent releases of BIND 9 which has the potential for deliberate exploitation as a denial-of-service attack. By sending a recursive resolver a query for a record in a specially malformed zone, an attacker can cause BIND 9 to exit with a fatal \"RUNTIME_CHECK\" error in resolver.c",
+    "impact": "BIND 9"
+   }
+  },
+  {
+   "ID": 53,
+   "CVE": "2013-2266",
+   "ShortDescription": "A Maliciously Crafted Regular Expression Can Cause Memory Exhaustion in named",
+   "Url": "https://kb.isc.org/article/AA-00871/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2013-2266",
+    "DocumentVersion": "2.0",
+    "PostingDate": "26 March 2013",
+    "version_affected": "\"Unix\" versions of  BIND 9.7.x, 9.8.0 -\u003e 9.8.5b1, 9.9.0 -\u003e 9.9.3b1.  (Windows versions are not affected. Versions of BIND 9 prior to BIND 9.7.0 (including BIND 9.6-ESV) are not affected.  BIND 10 is not affected.)",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "A flaw in a library used by BIND 9.7, 9.8, and 9.9, when compiled on Unix and related operating systems, allows an attacker to deliberately cause excessive memory consumption by the named process, potentially resulting in exhaustion of memory resources on the affected server.  This condition can crash BIND 9 and will likely severely affect operation of other programs running on the same machine.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 52,
+   "CVE": "2012-5689",
+   "ShortDescription": "BIND 9 with DNS64 enabled can unexpectedly terminate when resolving domains in RPZ",
+   "Url": "https://kb.isc.org/article/AA-00855/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2012-5689",
+    "DocumentVersion": "2.0",
+    "PostingDate": "24 January 2013",
+    "version_affected": "9.8.0-\u003e9.8.4-P1, 9.9.0-\u003e9.9.2-P1",
+    "severity": "Low",
+    "expoitable": "Remotely",
+    "description": "",
+    "impact": "BIND 9"
+   }
+  },
+  {
+   "ID": 51,
+   "CVE": "2012-5688",
+   "ShortDescription": "BIND 9 servers using DNS64 can be crashed by a crafted query",
+   "Url": "https://kb.isc.org/article/AA-00828/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2012-5688",
+    "DocumentVersion": "2.0",
+    "PostingDate": "04 Dec 2012",
+    "version_affected": "9.8.0-\u003e9.8.4, \n9.9.0-\u003e9.9.2",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "BIND 9 nameservers using the DNS64 IPv6 transition mechanism are vulnerable to a software defect that allows a crafted query to crash the server with a REQUIRE assertion failure.  Remote exploitation of this defect can be achieved without extensive effort, resulting in a denial-of-service (DoS) vector against affected servers.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 50,
+   "CVE": "2012-5166",
+   "ShortDescription": "Specially crafted DNS data can cause a lockup in named",
+   "Url": "https://kb.isc.org/article/AA-00801/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2012-5166",
+    "DocumentVersion": "2.1",
+    "PostingDate": "9 October 2012",
+    "version_affected": "9.2.x -\u003e 9.6.x, 9.4-ESV-\u003e9.4-ESV-R5-P1, \n9.6-ESV-\u003e9.6-ESV-R7-P3, 9.7.0-\u003e9.7.6-P3, 9.8.0-\u003e9.8.3-P3, \n9.9.0-\u003e9.9.1-P3",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "If specific combinations of RDATA are loaded into a nameserver, either via cache or an authoritative zone, a subsequent query for a related record will cause named to lock up.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 49,
+   "CVE": "2012-4244",
+   "ShortDescription": "A specially crafted Resource Record could cause named to terminate",
+   "Url": "https://kb.isc.org/article/AA-00778/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2012-4244",
+    "DocumentVersion": "2.0",
+    "PostingDate": "12 September 2012",
+    "version_affected": "9.0.x -\u003e 9.6.x, 9.4-ESV-\u003e9.4-ESV-R5-P1, \n9.6-ESV-\u003e9.6-ESV-R7-P2, 9.7.0-\u003e9.7.6-P2, 9.8.0-\u003e9.8.3-P2, \n9.9.0-\u003e9.9.1-P2",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "If a record with RDATA in excess of 65535 bytes is loaded into a nameserver, a subsequent query for that record will cause named to exit with an assertion failure.",
+    "impact": "BIND"
+   }
+  },
+  {
+   "ID": 48,
+   "CVE": "2012-3868",
+   "ShortDescription": "High TCP query load can trigger a memory leak",
+   "Url": "https://kb.isc.org/article/AA-00730/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2012-3868",
+    "DocumentVersion": "None",
+    "PostingDate": "None",
+    "version_affected": "None",
+    "severity": "None",
+    "expoitable": "None",
+    "description": "",
+    "impact": "None"
+   }
+  },
+  {
+   "ID": 47,
+   "CVE": "2012-3817",
+   "ShortDescription": "Heavy DNSSEC validation load can cause a \"bad cache\" assertion failure",
+   "Url": "https://kb.isc.org/article/AA-00729/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2012-3817",
+    "DocumentVersion": "None",
+    "PostingDate": "None",
+    "version_affected": "None",
+    "severity": "None",
+    "expoitable": "None",
+    "description": "",
+    "impact": "None"
+   }
+  },
+  {
+   "ID": 46,
+   "CVE": "2012-1667",
+   "ShortDescription": "Handling of zero length rdata can cause named to terminate unexpectedly",
+   "Url": "https://kb.isc.org/article/AA-00698/0",
+   "Status": 1,
+   "Detail": {
+    "CVE": "2012-1667",
+    "DocumentVersion": "1.4",
+    "PostingDate": "04 Jun 2012",
+    "version_affected": "9.0.x -\u003e 9.6.x, 9.4-ESV-\u003e9.4-ESV-R5-P1, \n9.6-ESV-\u003e9.6-ESV-R7, 9.7.0-\u003e9.7.6, 9.8.0-\u003e9.8.3, \n9.9.0-\u003e9.9.1",
+    "severity": "Critical",
+    "expoitable": "Remotely",
+    "description": "\n    \n            \n                    This problem was uncovered while testing with \nexperimental DNS record  types. It is possible to add records to BIND \nwith null (zero length)  rdata fields.\nProcessing of these records may lead to unexpected outcomes. \nRecursive  servers may crash or disclose some portion of memory to the \nclient.  Secondary servers may crash on restart after transferring a \nzone  containing these records. Master servers may corrupt zone data if \nthe  zone option \"auto-dnssec\" is set to \"maintain\". Other unexpected  \nproblems that are not listed here may also be encountered.\nImpact: This issue primarily affects recursive  \nnameservers. Authoritative nameservers will only be impacted if an  \nadministrator configures experimental record types with no data. If the \n server is configured this way, then secondaries can crash on restart  \nafter transferring that zone. Zone data on the master can become  \ncorrupted if the zone with those records has named configured to manage \n the DNSSEC key rotation.\nCVSS Score: 8.5\nCVSS Equation: (AV:N/AC:L/Au:N/C:P/I:N/A:C)\nFor more information on the Common Vulnerability Scoring System and to obtain your specific environmental score please visit: http://nvd.nist.gov/cvss.cfm?calculator\u0026adv\u0026version=2\u0026vector=(AV:N/AC:L/Au:N/C:P/I:N/A:C)\n        \n        \n",
+    "impact": "BIND"
+   }
+  }
+ ],
+ "Status": 1,
+ "Fetched": 37,
+ "Url": "https://kb.isc.org/article/AA-00913/0/BIND-9-Security-Vulnerability-Matrix.html"
+}

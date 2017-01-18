@@ -1,2 +1,3 @@
 github.com/BurntSushi/toml
 github.com/gorilla/mux
+github.com/PuerkitoBio/goquery
