@@ -5,3 +5,8 @@ Token = "TestWeiChat"
 [Server]
 Host = "0.0.0.0"
 Port = 4000
+
+[Databases]
+Host = "localhost"
+Port = 3306
+DBName = "SecurityNews"

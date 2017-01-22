@@ -13,6 +13,11 @@ type Config struct {
 		Host string
 		Port int
 	}
+	Database struct {
+		Host         string
+		Port         int
+		DBName string
+	}
 }
 
 var ConfigObj Config

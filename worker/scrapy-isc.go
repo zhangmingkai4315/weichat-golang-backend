@@ -5,94 +5,81 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	//"log"
+	"encoding/json"
+	"github.com/zhangmingkai4315/weichat-golang-backend/worker/utils"
+	"io/ioutil"
+	"log"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
-	"log"
-	"encoding/json"
-	"os"
-	"io/ioutil"
 )
 
 const (
-	ISC_VULNERABILITY_MATRIX = "https://kb.isc.org/article/AA-00913/0/BIND-9-Security-Vulnerability-Matrix.html"
-	SAVE_FILE_PATH ="./data/lastest.file"
+	ISC_URL        = "https://kb.isc.org/article/AA-00913/0/BIND-9-Security-Vulnerability-Matrix.html"
+	SAVE_FILE_PATH = "./data/lastest.file"
 )
 
-//status means the query running status.
-type status int32
-
-//those status will act like a enum type
-const (
-	QUERY_NOTSTART status = iota
-	QUERY_READY
-	QUERY_RUNNING
-	QUERY_STOPPED
-	QUERY_ERROR
-	QUERY_SKIP
-)
-const MAXCONCURRENT = 5
 var (
 	ErrUnequalResults     = errors.New("Unequal results and urls return")
 	ErrOutOfSelectedRange = errors.New("Selected range out of 3")
 )
 
 type BindValunerabilityDetail struct {
-	CVE             string  `json:cve`
+	CVE             string `json:cve`
 	DocumentVersion string `json:document_version`
-	PostingDate     string  `json:posting_date`
-	VersionAffected string  `json:"version_affected"`
-	Severity        string  `json:"severity"`
-	Expoitable      string  `json:"expoitable"`
-	Description     string  `json:"description"`
-	Impact          string  `json:"impact"`
+	PostingDate     string `json:posting_date`
+	VersionAffected string `json:"version_affected"`
+	Severity        string `json:"severity"`
+	Expoitable      string `json:"expoitable"`
+	Description     string `json:"description"`
+	Impact          string `json:"impact"`
 }
 type BindValunerability struct {
 	ID               int                      `json:id`
 	CVE              string                   `json:cve`
 	ShortDescription string                   `json:short_descriotion`
 	Url              string                   `json:url`
-	Status           status                   `json:status`
+	QueryStatus      utils.Status             `json:status`
 	Detail           BindValunerabilityDetail `json:detail`
 }
+
 func NewBindValunerabiltiy() *BindValunerability {
 	return &BindValunerability{
-		Status: QUERY_NOTSTART,
-		Detail: BindValunerabilityDetail{},
+		QueryStatus: utils.QUERY_INIT,
+		Detail:      BindValunerabilityDetail{},
 	}
 }
-func NewBindValunerabilityDetail(cve string)*BindValunerabilityDetail{
-	return &BindValunerabilityDetail{CVE:cve}
+func NewBindValunerabilityDetail(cve string) *BindValunerabilityDetail {
+	return &BindValunerabilityDetail{CVE: cve}
 }
 
-func splitAndLast(s string)string{
-	temp:=strings.Split(s,":")
-	if len(temp)>1{
+func splitAndLast(s string) string {
+	temp := strings.Split(s, ":")
+	if len(temp) > 1 {
 		return strings.TrimSpace(temp[1])
-	}else{
+	} else {
 		return "None"
 	}
 }
-func(self *BindValunerabilityDetail)GetDetailInfo(cve,url string)error{
-	self.CVE=cve
+func (self *BindValunerabilityDetail) GetDetailInfo(cve, url string) error {
+	self.CVE = cve
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		return err
 	}
-	self.DocumentVersion=splitAndLast(doc.Find(".txt .field-field-document-version").Last().Text())
-	self.PostingDate=splitAndLast(doc.Find(".txt .field-field-date").Last().Text())
-	self.Impact=splitAndLast(doc.Find(".txt .field-field-project").Last().Text())
-	self.VersionAffected=splitAndLast(doc.Find(".txt .field-field-versions-affected").Last().Text())
-	self.Severity=splitAndLast(doc.Find(".txt .field-field-severity").Last().Text())
-	self.Expoitable=splitAndLast(doc.Find(".txt .field-field-exploitable").Last().Text())
+	self.DocumentVersion = splitAndLast(doc.Find(".txt .field-field-document-version").Last().Text())
+	self.PostingDate = splitAndLast(doc.Find(".txt .field-field-date").Last().Text())
+	self.Impact = splitAndLast(doc.Find(".txt .field-field-project").Last().Text())
+	self.VersionAffected = splitAndLast(doc.Find(".txt .field-field-versions-affected").Last().Text())
+	self.Severity = splitAndLast(doc.Find(".txt .field-field-severity").Last().Text())
+	self.Expoitable = splitAndLast(doc.Find(".txt .field-field-exploitable").Last().Text())
 
-	lastPos:=doc.Find(".txt .field-field-exploitable")
-	self.Description=lastPos.Next().Next().Next().Text()
+	lastPos := doc.Find(".txt .field-field-exploitable")
+	self.Description = lastPos.Next().Next().Next().Text()
 	return nil
 }
-
-
 
 func (bv *BindValunerability) String() string {
 	return fmt.Sprintf("[ID:%d] CVE=%s ShortDescription=%s Url=%s", bv.ID, bv.CVE, bv.ShortDescription, bv.Url)
@@ -100,18 +87,18 @@ func (bv *BindValunerability) String() string {
 
 type BindValunerabilityList struct {
 	sync.Mutex
-	Bvlist  []*BindValunerability
-	Status  status
-	Fetched int32
-	Url     string
+	Bvlist      []*BindValunerability
+	QueryStatus utils.Status
+	Fetched     int32
+	Url         string
 }
 
 func NewBindValunerabilityList() *BindValunerabilityList {
 	return &BindValunerabilityList{
-		Status:  QUERY_NOTSTART,
-		Fetched: 0,
-		Url:     ISC_VULNERABILITY_MATRIX,
-		Bvlist:  []*BindValunerability{},
+		QueryStatus: utils.QUERY_INIT,
+		Fetched:     0,
+		Url:         ISC_URL,
+		Bvlist:      []*BindValunerability{},
 	}
 }
 
@@ -143,10 +130,10 @@ func (self *BindValunerabilityList) Start() error {
 						link, exist := subsub.Find("a").Attr("href")
 						if exist == false {
 							bv.Url = ""
-							bv.Status = QUERY_ERROR
+							bv.QueryStatus = utils.QUERY_ERROR
 						} else {
 							bv.Url = link
-							bv.Status = QUERY_READY
+							bv.QueryStatus = utils.QUERY_READY
 						}
 					}
 				})
@@ -155,7 +142,7 @@ func (self *BindValunerabilityList) Start() error {
 		}
 	})
 
-	self.Status = QUERY_READY
+	self.QueryStatus = utils.QUERY_READY
 	return nil
 }
 func (self *BindValunerabilityList) ShowList() {
@@ -166,13 +153,12 @@ func (self *BindValunerabilityList) ShowList() {
 func (self *BindValunerabilityList) GetLastId() int {
 	var lastid int
 	for _, item := range self.Bvlist {
-		if lastid<item.ID {
+		if lastid < item.ID {
 			lastid = item.ID
 		}
 	}
 	return lastid
 }
-
 
 func (self *BindValunerabilityList) ShowFetchedNumber() int32 {
 	self.Lock()
@@ -182,18 +168,19 @@ func (self *BindValunerabilityList) ShowFetchedNumber() int32 {
 
 //AddFetched 当有一个已经结束的时候，在Fetched上面加1
 func (self *BindValunerabilityList) AddFetched() {
-	atomic.AddInt32(&self.Fetched,1)
+	atomic.AddInt32(&self.Fetched, 1)
 }
+
 //SaveListToFile 保存查询到的数据到文件列表
-func SaveListToFile(file string,bvl *BindValunerabilityList)error{
+func SaveListToFile(file string, bvl *BindValunerabilityList) error {
 	fp, err := os.Create(file)
 	if err != nil {
 		log.Panicf("Unable to create %v. Err: %v.", file, err)
 		return err
 	}
 	defer fp.Close()
-	j,err:=json.MarshalIndent(bvl,""," ")
-	if err!=nil{
+	j, err := json.MarshalIndent(bvl, "", " ")
+	if err != nil {
 		return err
 	}
 	_, werr := fp.Write(j)
@@ -207,77 +194,76 @@ func (bv *BindValunerability) GetDetail() error {
 	return nil
 }
 
-
-func ReadLastListFromFile(fileName string)(*BindValunerabilityList,error){
-	bvl:=NewBindValunerabilityList()
-	rawFile,err:=ioutil.ReadFile(fileName)
-	if err!=nil{
-		return nil,err
+func ReadLastListFromFile(fileName string) (*BindValunerabilityList, error) {
+	bvl := NewBindValunerabilityList()
+	rawFile, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return nil, err
 	}
-	err=json.Unmarshal(rawFile, bvl)
-	if err!=nil{
-		return nil,err
+	err = json.Unmarshal(rawFile, bvl)
+	if err != nil {
+		return nil, err
 	}
-	return bvl,nil
+	return bvl, nil
 }
 
 func main() {
 	bvlist := NewBindValunerabilityList()
-	log.Printf("Will start send url request : %s", ISC_VULNERABILITY_MATRIX)
+	log.Printf("Will start send url request : %s", ISC_URL)
 	err := bvlist.Start()
 	if err != nil {
 		log.Panicf("Request Error : %s", err)
 		return
 	}
 	//与之前下载的json文件进行比对,查看是否需要下载最新
-	lastList,err:=ReadLastListFromFile(SAVE_FILE_PATH)
+	lastList, err := ReadLastListFromFile(SAVE_FILE_PATH)
 
-	if err==nil{
-		lastMaxId:=lastList.GetLastId()
-		currentMaxId:=bvlist.GetLastId()
+	if err == nil {
+		lastMaxId := lastList.GetLastId()
+		currentMaxId := bvlist.GetLastId()
 		// 比对最大记录id值
-		if lastMaxId == currentMaxId{
-			bvlist.Status = QUERY_SKIP
-			log.Printf("Skip query the detail, the current max id is same like before : %d,",lastMaxId)
+		if lastMaxId == currentMaxId {
+			bvlist.QueryStatus = utils.QUERY_SKIP
+			log.Printf("Skip query the detail, the current max id is same like before : %d,", lastMaxId)
 			return
-		}else if lastMaxId < currentMaxId{
-			log.Printf("The current max id is larger than before : %d > %d try to call alarm methord",currentMaxId,lastMaxId)
-			for _,b:=range bvlist.Bvlist{
-				if b.ID == currentMaxId{
-					err:=b.Detail.GetDetailInfo(b.CVE,b.Url)
-					if err!=nil{
-						b.Status=QUERY_ERROR
-					}else{
+		} else if lastMaxId < currentMaxId {
+			log.Printf("The current max id is larger than before : %d > %d try to call alarm methord", currentMaxId, lastMaxId)
+			for _, b := range bvlist.Bvlist {
+				if b.ID == currentMaxId {
+					err := b.Detail.GetDetailInfo(b.CVE, b.Url)
+					if err != nil {
+						b.QueryStatus = utils.QUERY_ERROR
+					} else {
 						bvlist.AddFetched()
 					}
 				}
-				lastList.Bvlist=append(lastList.Bvlist,b)
-				SaveListToFile(SAVE_FILE_PATH,lastList)
+				lastList.Bvlist = append(lastList.Bvlist, b)
+				SaveListToFile(SAVE_FILE_PATH, lastList)
 			}
 			return
 		}
 	}
 	//如果无法获得之前的文件数据，初始化保存数据到文件。
 	var wg sync.WaitGroup
-	requestChan:=make(chan struct{},MAXCONCURRENT)
-	if bvlist.Status == QUERY_READY {
+	requestChan := make(chan struct{}, utils.MAXCONCURRENT)
+	if bvlist.QueryStatus == utils.QUERY_READY {
 		log.Println("Will start concurrent query each item")
 		wg.Add(len(bvlist.Bvlist))
-		for _,b:=range(bvlist.Bvlist){
-			go func(b *BindValunerability){
+		for _, b := range bvlist.Bvlist {
+			go func(b *BindValunerability) {
 				defer wg.Done()
-				requestChan<-struct{}{}
-				err:=b.Detail.GetDetailInfo(b.CVE,b.Url)
-				if err!=nil{
-					b.Status=QUERY_ERROR
-				}else{
+				requestChan <- struct{}{}
+				err := b.Detail.GetDetailInfo(b.CVE, b.Url)
+				if err != nil {
+					b.QueryStatus = utils.QUERY_ERROR
+				} else {
 					bvlist.AddFetched()
 				}
 				<-requestChan
 			}(b)
 		}
 		wg.Wait()
-		SaveListToFile(SAVE_FILE_PATH,bvlist)
+		SaveListToFile(SAVE_FILE_PATH, bvlist)
 		log.Println("Current Query Number is", bvlist.ShowFetchedNumber())
 	}
 
