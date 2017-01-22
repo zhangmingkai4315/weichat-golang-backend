@@ -12,10 +12,12 @@ import (
 	"log"
 	"encoding/json"
 	"os"
+	"io/ioutil"
 )
 
 const (
 	ISC_VULNERABILITY_MATRIX = "https://kb.isc.org/article/AA-00913/0/BIND-9-Security-Vulnerability-Matrix.html"
+	SAVE_FILE_PATH ="./data/lastest.file"
 )
 
 //status means the query running status.
@@ -28,6 +30,7 @@ const (
 	QUERY_RUNNING
 	QUERY_STOPPED
 	QUERY_ERROR
+	QUERY_SKIP
 )
 const MAXCONCURRENT = 5
 var (
@@ -160,16 +163,28 @@ func (self *BindValunerabilityList) ShowList() {
 		println(item.String())
 	}
 }
+func (self *BindValunerabilityList) GetLastId() int {
+	var lastid int
+	for _, item := range self.Bvlist {
+		if lastid<item.ID {
+			lastid = item.ID
+		}
+	}
+	return lastid
+}
+
+
 func (self *BindValunerabilityList) ShowFetchedNumber() int32 {
 	self.Lock()
 	defer self.Unlock()
 	return self.Fetched
 }
+
 //AddFetched 当有一个已经结束的时候，在Fetched上面加1
 func (self *BindValunerabilityList) AddFetched() {
 	atomic.AddInt32(&self.Fetched,1)
 }
-
+//SaveListToFile 保存查询到的数据到文件列表
 func SaveListToFile(file string,bvl *BindValunerabilityList)error{
 	fp, err := os.Create(file)
 	if err != nil {
@@ -192,6 +207,20 @@ func (bv *BindValunerability) GetDetail() error {
 	return nil
 }
 
+
+func ReadLastListFromFile(fileName string)(*BindValunerabilityList,error){
+	bvl:=NewBindValunerabilityList()
+	rawFile,err:=ioutil.ReadFile(fileName)
+	if err!=nil{
+		return nil,err
+	}
+	err=json.Unmarshal(rawFile, bvl)
+	if err!=nil{
+		return nil,err
+	}
+	return bvl,nil
+}
+
 func main() {
 	bvlist := NewBindValunerabilityList()
 	log.Printf("Will start send url request : %s", ISC_VULNERABILITY_MATRIX)
@@ -200,6 +229,35 @@ func main() {
 		log.Panicf("Request Error : %s", err)
 		return
 	}
+	//与之前下载的json文件进行比对,查看是否需要下载最新
+	lastList,err:=ReadLastListFromFile(SAVE_FILE_PATH)
+
+	if err==nil{
+		lastMaxId:=lastList.GetLastId()
+		currentMaxId:=bvlist.GetLastId()
+		// 比对最大记录id值
+		if lastMaxId == currentMaxId{
+			bvlist.Status = QUERY_SKIP
+			log.Printf("Skip query the detail, the current max id is same like before : %d,",lastMaxId)
+			return
+		}else if lastMaxId < currentMaxId{
+			log.Printf("The current max id is larger than before : %d > %d try to call alarm methord",currentMaxId,lastMaxId)
+			for _,b:=range bvlist.Bvlist{
+				if b.ID == currentMaxId{
+					err:=b.Detail.GetDetailInfo(b.CVE,b.Url)
+					if err!=nil{
+						b.Status=QUERY_ERROR
+					}else{
+						bvlist.AddFetched()
+					}
+				}
+				lastList.Bvlist=append(lastList.Bvlist,b)
+				SaveListToFile(SAVE_FILE_PATH,lastList)
+			}
+			return
+		}
+	}
+	//如果无法获得之前的文件数据，初始化保存数据到文件。
 	var wg sync.WaitGroup
 	requestChan:=make(chan struct{},MAXCONCURRENT)
 	if bvlist.Status == QUERY_READY {
@@ -219,11 +277,8 @@ func main() {
 			}(b)
 		}
 		wg.Wait()
-		SaveListToFile("lastest.file",bvlist)
+		SaveListToFile(SAVE_FILE_PATH,bvlist)
+		log.Println("Current Query Number is", bvlist.ShowFetchedNumber())
 	}
-	log.Println("Current Query Number is", bvlist.ShowFetchedNumber())
-
-
-
 
 }
