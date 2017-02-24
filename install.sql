@@ -10,7 +10,7 @@ SET NAMES 'utf8';
 DROP TABLE IF EXISTS `hackernews`;
 create table IF NOT EXISTS `hackernews`(
     `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `uuid`    varchar(32) not null,
+    `uuid`    varchar(36) not null,
     `title`    varchar(256) not null,
     `link`    varchar(256) not null,
     `post_date` timestamp  DEFAULT CURRENT_TIMESTAMP,
@@ -21,6 +21,6 @@ create table IF NOT EXISTS `hackernews`(
     UNIQUE(`uuid`),
     PRIMARY KEY (`id`)
 )DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE INDEX ihnmd5 ON hackernews (md5);
+alter table hackernews add unique index hackernews_md5_ux (md5);
 
 EXPLAIN `hackernews`;

@@ -5,30 +5,40 @@ import (
 	"log"
 )
 
-type Config struct {
+type config struct {
 	Security struct {
-		Token string
+		Token     string
+		AppId     string
+		AppSecret string
 	}
 	Server struct {
 		Host string
 		Port int
 	}
 	Database struct {
-		Host         string
-		Port         int
-		DBName string
+		Host     string
+		User     string
+		Password string
+		Port     int
+		DBName   string
+	}
+	Url struct {
+		TokenRefreshUrl string
 	}
 }
 
-var ConfigObj Config
+var ConfigObj config
 
-func NewConfig() (*Config, error) {
-	if ConfigObj.Server.Host == "" {
-		if _, err := toml.DecodeFile("./config/config.toml", &ConfigObj); err != nil {
+func init() {
+	NewConfig(&ConfigObj)
+}
+func NewConfig(c *config) (*config, error) {
+	if c.Server.Host == "" {
+		if _, err := toml.DecodeFile("./config/config.toml", &c); err != nil {
 			log.Printf("Config Error %s", err)
 			return nil, err
 		}
 		log.Printf("Loading Config File Success")
 	}
-	return &ConfigObj, nil
+	return c, nil
 }

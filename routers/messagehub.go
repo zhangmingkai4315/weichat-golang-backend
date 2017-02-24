@@ -21,12 +21,17 @@ func ThanksForYourMessage() string {
 func TextHub(w http.ResponseWriter, um *UserMessage) {
 	switch um.Content {
 	case "历史":
-		um.ResponseUser(UsageText())
+		um.ResponseUserWithContent(UsageText())
 	case "攻击":
-		um.ResponseUser(UsageText())
+		um.ResponseUserWithContent(UsageText())
 	default:
-		um.ResponseUser(ThanksForYourMessage())
+		um.ResponseUserWithContent(ThanksForYourMessage())
 	}
+	answerMessage(w, um)
+}
+
+func ImageHub(w http.ResponseWriter, um *UserMessage) {
+	um.ResponseUser()
 	answerMessage(w, um)
 }
 
@@ -35,7 +40,7 @@ func EventHub(w http.ResponseWriter, um *UserMessage) {
 	case "subscribe":
 		fallthrough
 	default:
-		um.ResponseUser(UsageText())
+		um.ResponseUser()
 	}
 	answerMessage(w, um)
 }

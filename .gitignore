@@ -2,6 +2,8 @@
 *.o
 *.a
 *.so
+config.toml
+config/config.toml
 
 # Folders
 _obj
@@ -22,3 +24,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+*.toml
+
+config/config.toml

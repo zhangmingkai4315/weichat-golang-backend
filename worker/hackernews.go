@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/satori/go.uuid"
+	Utils "github.com/zhangmingkai4315/weichat-golang-backend/utils"
 	"github.com/zhangmingkai4315/weichat-golang-backend/worker/utils"
 	"log"
 	"time"
 )
 
 const (
-	HackerNewsURL = "https://news.ycombinator.com/"
+	HackerNewsURL    = "https://news.ycombinator.com/"
 	HackerNewsTables = "hackernews"
 )
 
@@ -27,9 +28,9 @@ type HackerNewsItem struct {
 }
 
 type HackerNewsList struct {
-	HNL         []HackerNewsItem `json:news`
-	URL         string           `json:homepage`
-	QueryStatus utils.Status     `json:status`
+	HNL          []HackerNewsItem `json:news`
+	URL          string           `json:homepage`
+	QueryStatus  utils.Status     `json:status`
 	ErrorMessage string
 }
 
@@ -46,8 +47,9 @@ func (self HackerNewsItem) String() string {
 		"PostDate:%s\n"+
 		"Score:%s\n"+
 		"User:%s\n"+
+		"Link:%s\n"+
 		"Web:%s\n"+
-		"Md5:%s\n", self.Id, self.Title, self.Time, self.Score, self.User, self.From, self.Md5Sum)
+		"Md5:%s\n", self.Id, self.Title, self.Time, self.Score, self.User, self.Link, self.From, self.Md5Sum)
 }
 
 func NewHackerNewsList(url string) *HackerNewsList {
@@ -68,7 +70,7 @@ func hacknewsparse(doc *goquery.Document, hnl *HackerNewsList) error {
 		case 0:
 			currentItem = NewHackerNewsItem()
 			currentItem.Title = s.Find(".storylink").Text()
-			currentItem.Link, _ = s.Find(".storylink a").First().Attr("href")
+			currentItem.Link, _ = s.Find(".storylink").Attr("href")
 			currentItem.From = s.Find(".sitestr").First().Text()
 		case 1:
 			currentItem.Score = s.Find(".score").Text()
@@ -111,9 +113,23 @@ func (self *HackerNewsList) Start() error {
 	return nil
 }
 
-func (self *HackerNewsList) Save()error{
+func (self *HackerNewsList) Save() error {
+	db, err := Utils.NewDatabase()
+	defer db.Close()
+	if err != nil {
+		return err
+	}
+	log.Println("Begin save data to database...")
+	for _, row := range self.HNL {
+		_, err := db.Exec("INSERT INTO hackernews(uuid, title, link,post_date,score,user_name,user_profile,md5) "+
+			"VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE uuid = ?",
+			row.Id, row.Title, row.Link, row.Time, row.Score, row.User, row.UserLink, row.Md5Sum, row.Id)
+		if err != nil {
+			log.Printf("Saving To Database/Hackernews Fail:%f", err.Error())
+		}
+	}
+	return nil
 
-	return  nil
 }
 
 func (self *HackerNewsList) ShowList() {
@@ -121,21 +137,26 @@ func (self *HackerNewsList) ShowList() {
 		fmt.Println(item.String())
 	}
 }
-func (self *HackerNewsList) ShowStatus()utils.Status{
-	return  self.QueryStatus
+func (self *HackerNewsList) ShowStatus() utils.Status {
+	return self.QueryStatus
 }
 
 func main() {
 	hnl := NewHackerNewsList(HackerNewsURL)
 	err := hnl.Start()
 	if err != nil {
-		log.Panic(err)
+		log.Printf("Processing HackerNews Error %s", err.Error())
 		return
 	}
-	if hnl.ShowStatus() == utils.QUERY_STOPPED{
-		hnl.Save()
-	}else if hnl.ShowStatus() == utils.QUERY_ERROR{
-		log.Panic("Query status error:%s",hnl.ErrorMessage)
+	if hnl.ShowStatus() == utils.QUERY_ERROR {
+		log.Printf("Query Hackernews error:%s", hnl.ErrorMessage)
+		return
 	}
-	hnl.ShowList()
+	if hnl.ShowStatus() == utils.QUERY_STOPPED {
+		err := hnl.Save()
+		if err != nil {
+			log.Printf("Saving HackerNews Error %s", err.Error())
+		}
+		return
+	}
 }

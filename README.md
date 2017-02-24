@@ -1,7 +1,7 @@
 # weichat-golang-backend
 使用golang作为后端开发微信公众号
 
-1. 安装数据库 用于保存worker获取的数据
+1.安装数据库 用于保存worker获取的数据
 
 ```
 $ mysql -uyour_database_user -p < install.sql
@@ -20,7 +20,7 @@ md5     varchar(32)     NO      MUL     NULL
 ...
 ```
 
-2. 执行测试
+2.执行测试
 
 ```
 cd project

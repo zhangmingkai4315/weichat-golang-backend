@@ -2,6 +2,8 @@
 
 [Security]
 Token = "TestWeiChat"
+AppId = ""
+AppSecret =""
 [Server]
 Host = "0.0.0.0"
 Port = 4000
@@ -10,3 +12,7 @@ Port = 4000
 Host = "localhost"
 Port = 3306
 DBName = "SecurityNews"
+
+[Url]
+TokenRefreshUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential"
+
