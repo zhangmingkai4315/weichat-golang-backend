@@ -4,19 +4,17 @@
 1.安装数据库 用于保存worker获取的数据
 
 ```
+$ sudo apt-get install mysql-server mysql-client
+
+mysql>create database SecurityNews;
+mysql>GRANT ALL PRIVILEGES ON SecurityNews.* TO weixin@"%" IDENTIFIED BY '123456' WITH GRANT OPTION;
+mysql>FLUSH PRIVILEGES;
+
+
 $ mysql -uyour_database_user -p < install.sql
 
 Enter password: 
 Field   Type    Null    Key     Default Extra
-id      int(10) unsigned        NO      PRI     NULL    auto_increment
-uuid    varchar(32)     NO      UNI     NULL    
-title   varchar(256)    NO              NULL    
-link    varchar(256)    NO              NULL    
-post_date       timestamp       NO              CURRENT_TIMESTAMP       
-score   varchar(64)     NO              NULL    
-user_name       varchar(32)     NO              NULL    
-user_profile    varchar(128)    NO              NULL    
-md5     varchar(32)     NO      MUL     NULL    
 ...
 ```
 

@@ -38,7 +38,17 @@ func GetDateForThreadPostLayout(s string) (t time.Time, err error) {
 		fmt.Println(err)
 		return
 	}
-	return  t,nil
+	return t, nil
+}
+
+func GetDateFromMMDDYYYY(s string) (t time.Time, err error) {
+	const shortForm = "1/02/2006"
+	t, err = time.Parse(shortForm, s)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return t, nil
 }
 
 // GetDateFromString 转换相对时间到绝对时间

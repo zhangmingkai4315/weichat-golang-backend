@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/BurntSushi/toml"
 	"log"
+
+	"github.com/BurntSushi/toml"
 )
 
 type config struct {
@@ -32,6 +33,7 @@ var ConfigObj config
 func init() {
 	NewConfig(&ConfigObj)
 }
+
 func NewConfig(c *config) (*config, error) {
 	if c.Server.Host == "" {
 		if _, err := toml.DecodeFile("./config/config.toml", &c); err != nil {

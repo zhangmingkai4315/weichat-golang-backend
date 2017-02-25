@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/satori/go.uuid"
-	"github.com/zhangmingkai4315/weichat-golang-backend/utils"
 	"log"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/zhangmingkai4315/weichat-golang-backend/utils"
 )
 
 const (
@@ -15,7 +15,6 @@ const (
 )
 
 type HackerNewsItem struct {
-	Id       string    `json:id`
 	Title    string    `json:title`
 	Link     string    `json:link`
 	Time     time.Time `json:timestamp`
@@ -34,21 +33,17 @@ type HackerNewsList struct {
 }
 
 func NewHackerNewsItem() *HackerNewsItem {
-	// Creating UUID Version 4
-	var id string
-	id = fmt.Sprintf("%s", uuid.NewV4())
-	return &HackerNewsItem{Id: id}
+	return &HackerNewsItem{}
 }
 
 func (self HackerNewsItem) String() string {
-	return fmt.Sprintf("------%s-------\n"+
-		"Title:%s\n"+
+	return fmt.Sprintf("Title:%s\n"+
 		"PostDate:%s\n"+
 		"Score:%s\n"+
 		"User:%s\n"+
 		"Link:%s\n"+
 		"Web:%s\n"+
-		"Md5:%s\n", self.Id, self.Title, self.Time, self.Score, self.User, self.Link, self.From, self.Md5Sum)
+		"Md5:%s\n", self.Title, self.Time, self.Score, self.User, self.Link, self.From, self.Md5Sum)
 }
 
 func NewHackerNewsList(url string) *HackerNewsList {
@@ -119,9 +114,9 @@ func (self *HackerNewsList) Save() error {
 	}
 	log.Println("Begin save data to database...")
 	for _, row := range self.HNL {
-		_, err := db.Exec("INSERT INTO hackernews(uuid, title, link,post_date,score,user_name,user_profile,md5) "+
-			"VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE uuid = ?",
-			row.Id, row.Title, row.Link, row.Time, row.Score, row.User, row.UserLink, row.Md5Sum, row.Id)
+		_, err := db.Exec("INSERT INTO hackernews(title, link,post_date,score,user_name,user_profile,md5) "+
+			"VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE md5 = ?",
+			row.Title, row.Link, row.Time, row.Score, row.User, row.UserLink, row.Md5Sum, row.Md5Sum)
 		if err != nil {
 			log.Printf("Saving To Database/Hackernews Fail:%f", err.Error())
 		}

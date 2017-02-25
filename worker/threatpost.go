@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/zhangmingkai4315/weichat-golang-backend/utils"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/zhangmingkai4315/weichat-golang-backend/utils"
 )
 
 //https://threatpost.com/blog/
@@ -38,7 +39,7 @@ func NewThreadpostItem() *ThreatpostItem {
 }
 func NewThreadpostList(url string) *ThreatpostList {
 	tpl := []ThreatpostItem{}
-	return &ThreatpostList{TPL: tpl, QueryStatus: utils.QUERY_INIT, URL: ThreatpostURL}
+	return &ThreatpostList{TPL: tpl, QueryStatus: utils.QUERY_INIT, URL: url}
 }
 
 func (self ThreatpostItem) String() string {
@@ -139,14 +140,14 @@ func main() {
 		return
 	}
 	if tpl.ShowStatus() == utils.QUERY_ERROR {
-		log.Printf("Query Hackernews error:%s", tpl.ErrorMessage)
+		log.Printf("Query ThreadPost error:%s", tpl.ErrorMessage)
 		return
 	}
 	tpl.ShowList()
 	if tpl.ShowStatus() == utils.QUERY_STOPPED {
 		err := tpl.Save()
 		if err != nil {
-			log.Printf("Saving HackerNews Error %s", err.Error())
+			log.Printf("Saving ThreadPost Error %s", err.Error())
 		}
 		return
 	}
