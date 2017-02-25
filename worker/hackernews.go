@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/satori/go.uuid"
-	Utils "github.com/zhangmingkai4315/weichat-golang-backend/utils"
-	"github.com/zhangmingkai4315/weichat-golang-backend/worker/utils"
+	"github.com/zhangmingkai4315/weichat-golang-backend/utils"
 	"log"
 	"time"
 )
@@ -54,10 +53,9 @@ func (self HackerNewsItem) String() string {
 
 func NewHackerNewsList(url string) *HackerNewsList {
 	hnl := []HackerNewsItem{}
-
 	return &HackerNewsList{HNL: hnl, QueryStatus: utils.QUERY_INIT, URL: HackerNewsURL}
 }
-func hacknewsparse(doc *goquery.Document, hnl *HackerNewsList) error {
+func hacknewsParse(doc *goquery.Document, hnl *HackerNewsList) error {
 	log.Printf("Start parse data")
 	doclist := doc.Find(".itemlist tbody tr")
 	number := doclist.Length() / 3
@@ -106,7 +104,7 @@ func (self *HackerNewsList) Start() error {
 	log.Printf("Receive data from %s", self.URL)
 	// 进行解析
 	self.QueryStatus = utils.QUERY_RUNNING
-	if err := hacknewsparse(doc, self); err != nil {
+	if err := hacknewsParse(doc, self); err != nil {
 		return err
 	}
 	self.QueryStatus = utils.QUERY_STOPPED
@@ -114,7 +112,7 @@ func (self *HackerNewsList) Start() error {
 }
 
 func (self *HackerNewsList) Save() error {
-	db, err := Utils.NewDatabase()
+	db, err := utils.NewDatabase()
 	defer db.Close()
 	if err != nil {
 		return err

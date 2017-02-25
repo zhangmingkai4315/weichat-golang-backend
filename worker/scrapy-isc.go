@@ -6,7 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	//"log"
 	"encoding/json"
-	"github.com/zhangmingkai4315/weichat-golang-backend/worker/utils"
+	"github.com/zhangmingkai4315/weichat-golang-backend/utils"
 	"io/ioutil"
 	"log"
 	"os"

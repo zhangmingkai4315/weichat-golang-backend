@@ -31,6 +31,16 @@ func init() {
 	re_date = regexp.MustCompile("([0-9]+) (hours|hour|minute|minutes|days|day) ago")
 }
 
+func GetDateForThreadPostLayout(s string) (t time.Time, err error) {
+	format := "January 2, 2006 , 3:04 pm"
+	t, err = time.Parse(format, s)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return  t,nil
+}
+
 // GetDateFromString 转换相对时间到绝对时间
 // Input :"1 hour ago" or "52 minutes ago" , "2 days ago"
 func GetDateFromString(s string) (t time.Time, err error) {
