@@ -58,3 +58,20 @@ create table IF NOT EXISTS `darkreading`(
 alter table darkreading add unique index darkreading_md5_ux (md5);
 
 EXPLAIN `darkreading`;
+
+
+
+DROP TABLE IF EXISTS `infosecurity`;
+create table IF NOT EXISTS `infosecurity`(
+    `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title`    varchar(256) not null,
+    `link`    varchar(256) not null,
+    `post_date` timestamp  DEFAULT CURRENT_TIMESTAMP,
+    `short_content`   text,
+    `cover_img`    varchar(256),
+    `md5`     varchar(32) not null,
+    PRIMARY KEY (`id`)
+)DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+alter table infosecurity add unique index infosecurity_md5_ux (md5);
+
+EXPLAIN `infosecurity`;

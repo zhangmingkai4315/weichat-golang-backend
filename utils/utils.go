@@ -51,6 +51,16 @@ func GetDateFromMMDDYYYY(s string) (t time.Time, err error) {
 	return t, nil
 }
 
+func GetDateForInfoSec(s string) (t time.Time, err error) {
+	format := "02 Jan 2006"
+	t, err = time.Parse(format, s)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return t, nil
+}
+
 // GetDateFromString 转换相对时间到绝对时间
 // Input :"1 hour ago" or "52 minutes ago" , "2 days ago"
 func GetDateFromString(s string) (t time.Time, err error) {
